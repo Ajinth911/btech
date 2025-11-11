@@ -1,781 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BDA Lab Experiments</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        header {
-            text-align: center;
-            color: white;
-            padding: 40px 20px;
-            margin-bottom: 30px;
-        }
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .nav-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .nav-btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .nav-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-            background: #667eea;
-            color: white;
-        }
-        .nav-btn.active {
-            background: #667eea;
-            color: white;
-        }
-        .experiment {
-            display: none;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .experiment.active {
-            display: block;
-        }
-        .experiment h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-        .experiment h3 {
-            color: #764ba2;
-            margin: 25px 0 15px 0;
-            font-size: 1.3em;
-        }
-        .experiment p, .experiment ul {
-            line-height: 1.8;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .code-container {
-            position: relative;
-            margin: 20px 0;
-        }
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.85em;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-        .copy-btn:hover {
-            background: #764ba2;
-        }
-        .copy-btn.copied {
-            background: #10b981;
-        }
-        pre {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 20px;
-            padding-top: 45px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 0.85em;
-            line-height: 1.5;
-        }
-        .output-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-            margin: 20px 0;
-        }
-        .output-section h3 {
-            color: #667eea;
-            margin-top: 0;
-        }
-        .output-placeholder {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-        }
-        .output-placeholder svg {
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EL10 Cloud Lab — Experiments</title>
+  <style>
+    :root{ --bg:#f6f8fb; --card:#ffffff; --muted:#6b7280; --accent:#2563eb; --radius:12px; --shadow: 0 6px 18px rgba(16,24,40,0.08); font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:#0f1724;line-height:1.4;padding:28px;display:flex;justify-content:center}
+    .wrap{width:100%;max-width:960px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#60a5fa,#34d399);display:grid;place-items:center;color:#04202a;font-weight:800}
+    h1{font-size:18px;margin:0}
+    .meta{color:var(--muted);font-size:13px}
+
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+
+    main{background:transparent}
+    .list{display:grid;gap:12px}
+
+    .card{background:var(--card);border-radius:var(--radius);padding:14px;border:1px solid rgba(15,23,36,0.04);box-shadow:var(--shadow);transition:transform 220ms ease,box-shadow 220ms ease;transform-style:preserve-3d}
+    .card:hover{transform:translateY(-6px) rotateX(1.5deg);box-shadow:0 18px 40px rgba(16,24,40,0.12)}
+    .card-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .title{font-weight:700;font-size:15px}
+    .aim{color:var(--muted);font-size:13px}
+
+    .expand{margin-top:12px;display:none}
+    .card.open .expand{display:block}
+
+    .proc{margin:0 0 8px 18px;color:#0f1724}
+    .code{background:#0b1220;color:#d7e6f2;padding:10px;border-radius:8px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;font-size:13px;overflow:auto}
+    .result{background:#f8fafc;border-radius:8px;padding:10px;color:#065f46;border:1px solid rgba(6,95,70,0.06);font-weight:600}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    @media (max-width:640px){body{padding:18px}.logo{width:36px;height:36px}}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Big Data Analytics Lab</h1>
-        </header>
-
-        <div class="nav-buttons">
-            <button class="nav-btn active" onclick="showExperiment(1)">Exp 1</button>
-            <button class="nav-btn" onclick="showExperiment(2)">Exp 2</button>
-            <button class="nav-btn" onclick="showExperiment(3)">Exp 3</button>
-            <button class="nav-btn" onclick="showExperiment(4)">Exp 4</button>
-            <button class="nav-btn" onclick="showExperiment(5)">Exp 5</button>
-            <button class="nav-btn" onclick="showExperiment(6)">Exp 6</button>
-            <button class="nav-btn" onclick="showExperiment(7)">Exp 7</button>
-            <button class="nav-btn" onclick="showExperiment(8)">Exp 8</button>
-            <button class="nav-btn" onclick="showExperiment(9)">Exp 9</button>
-            <button class="nav-btn" onclick="showExperiment(10)">Exp 10</button>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">EL</div>
+        <div>
+          <h1>EL10 — Cloud Computing Lab</h1>
+          <div class="meta">11 Experiments • Procedures • Code • Results</div>
         </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="collapseAll">Collapse All</button>
+      </div>
+    </header>
 
-        <div class="experiment active" id="exp1">
-            <h2>Experiment 1: Standalone Mode</h2>
-            <h3>💻 Commands</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>hdfs namenode -format
-start-dfs.cmd
-start-yarn.cmd</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="150" viewBox="0 0 600 150">
-                        <rect width="600" height="150" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="35" fill="#4ec9b0" font-family="monospace" font-size="12">NameNode formatted</text>
-                        <text x="20" y="65" fill="#d4d4d4" font-family="monospace" font-size="11">Services started successfully</text>
-                        <text x="20" y="95" fill="#ce9178" font-family="monospace" font-size="11">Web UI: localhost:9870</text>
-                    </svg>
-                </div>
-            </div>
+    <main>
+      <section class="list" id="list"></section>
+      <footer>Procedures are simplified for lab practice. For production or public deployments follow official vendor documentation and secure credentials.</footer>
+    </main>
+  </div>
+
+  <script>
+    const experiments = [
+      {id:1,title:"Install VirtualBox / VMware and install different OS flavors",aim:"Create multiple VMs with different OS on a Windows host.",procedure:["Download and install VirtualBox or VMware.","Create VM and select OS ISO.","Assign RAM/CPU/Disk and install the OS.","Install Guest Additions/VM Tools.","Verify networking and shared folders."],code:"N/A (GUI-driven)",result:"VMs running Linux/Windows on the host."},
+      {id:2,title:"Install Virtual Machine using VMware",aim:"Create and configure VMs using VMware.",procedure:["Open VMware -> Create New Virtual Machine.","Choose ISO, name, disk size.","Configure CPU and memory and boot the VM.","Install VMware Tools inside guest."],code:"N/A (GUI-driven)",result:"Working VM installed with VMware."},
+      {id:3,title:"Install a C compiler and run a program",aim:"Install build tools and run a sample C program inside Linux VM.",procedure:["Open terminal in VM.","sudo apt update && sudo apt install build-essential -y.","Create hello.c, compile (gcc hello.c -o hello) and run ./hello."],code:`#include <stdio.h>
+int main(){ printf("Hello Cloud!\\n"); return 0; }`,result:"Outputs 'Hello Cloud!'"},
+      {id:4,title:"Install Google App Engine and create a Hello World app",aim:"Deploy a simple Flask app to GAE.",procedure:["Install Google Cloud SDK and run gcloud init.","Create Flask app and app.yaml with runtime.","Deploy with gcloud app deploy.","Open with gcloud app browse."],code:`# main.py
+from flask import Flask
+app=Flask(__name__)
+@app.route('/')
+def hello():
+  return 'Hello, Cloud World!'`,result:"App responds with 'Hello, Cloud World!' on App Engine."},
+      {id:5,title:"Use GAE Launcher to launch web applications",aim:"Run and deploy App Engine apps via launcher.",procedure:["Open GAE Launcher or emulator.","Run project locally for testing.","Deploy when ready."],code:"N/A (GUI)",result:"App runs locally and can be deployed."},
+      {id:6,title:"Simulate a cloud scenario using CloudSim",aim:"Model datacenters, VMs and cloudlets.",procedure:["Download CloudSim and import into IDE.","Create Datacenter, Broker, Hosts and VMs in Java.","Submit cloudlets and run simulation."],code:"// Java snippets (CloudSim)",result:"Simulation output with execution metrics."},
+      {id:7,title:"CloudSim with scheduling algorithm",aim:"Compare scheduling algorithms (Round Robin/FCFS).",procedure:["Implement scheduler changes in broker.","Create VMs and cloudlets with different lengths.","Run and compare makespan / completion times."],code:"// scheduler implementation",result:"Metrics comparing algorithms."},
+      {id:8,title:"Transfer files between two VMs",aim:"Copy files via network (scp/rsync).",procedure:["Ensure VMs are network-visible.","Get destination IP (ifconfig/ip addr).","Use scp or rsync to transfer the file.","Verify file on destination."],code:`scp file.txt user@192.168.56.101:/home/user/`,result:"File transferred and verified."},
+      {id:9,title:"Launch VM using TryStack (OpenStack)",aim:"Create instance on TryStack/OpenStack demo.",procedure:["Login to TryStack dashboard.","Instances -> Launch Instance: choose image and flavor.","Attach keypair and network, then boot.","SSH into instance to test."],code:"N/A (dashboard)",result:"Instance booted and reachable via SSH."},
+      {id:10,title:"Install Hadoop single-node cluster and run WordCount",aim:"Set up Hadoop pseudo-distributed mode and run WordCount.",procedure:["Install Java and Hadoop, configure core-site/hdfs-site.","Format namenode and start HDFS & YARN.","Put input in HDFS and run wordcount jar.","Fetch output from HDFS."],code:`hadoop jar hadoop-mapreduce-examples.jar wordcount /input /output`,result:"Word counts stored in HDFS."},
+      {id:11,title:"Write a Word Count program (MapReduce)",aim:"Implement word count using Hadoop streaming or Java.",procedure:["Write mapper to emit word\t1 per token.","Write reducer to sum counts.","Run via Hadoop streaming and validate output."],code:`# mapper.py
+import sys
+for line in sys.stdin:
+  for w in line.strip().split():
+    print(f"{w}\t1")
+
+# reducer.py
+import sys
+from collections import defaultdict
+counts=defaultdict(int)
+for line in sys.stdin:
+  w,c=line.strip().split('\t')
+  counts[w]+=int(c)
+for w in counts:
+  print(w+'\t'+str(counts[w]))`,result:"Key-value pairs with word counts."}
+    ];
+
+    const list = document.getElementById('list');
+    experiments.forEach(exp => {
+      const el = document.createElement('article');
+      el.className='card';
+      el.innerHTML = `
+        <div class="card-head">
+          <div>
+            <div class="title">${exp.id}. ${escape(exp.title)}</div>
+            <div class="aim">${escape(exp.aim)}</div>
+          </div>
+          <div style="text-align:right">
+            <button class="btn" data-id="${exp.id}">Open</button>
+          </div>
         </div>
-
-        <div class="experiment" id="exp2">
-            <h2>Experiment 2: Pseudo Distributed</h2>
-            <h3>💻 Commands</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>hdfs namenode -format -y
-start-dfs.cmd
-start-yarn.cmd</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="140" viewBox="0 0 600 140">
-                        <rect width="600" height="140" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="35" fill="#4ec9b0" font-family="monospace" font-size="11">Starting namenodes</text>
-                        <text x="20" y="65" fill="#d4d4d4" font-family="monospace" font-size="11">Starting datanodes</text>
-                        <text x="20" y="95" fill="#ce9178" font-family="monospace" font-size="11">YARN started</text>
-                    </svg>
-                </div>
-            </div>
+        <div class="expand">
+          <h4>Procedure</h4>
+          <ol class="proc">${exp.procedure.map(p=>`<li>${escape(p)}</li>`).join('')}</ol>
+          <h4>Sample Code</h4>
+          <pre class="code">${escape(exp.code)}</pre>
+          <h4>Expected Result</h4>
+          <div class="result">${escape(exp.result)}</div>
         </div>
-
-        <div class="experiment" id="exp3">
-            <h2>Experiment 3: Fully Distributed</h2>
-            <h3>💻 Commands</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>hdfs namenode -format -y
-start-dfs.cmd
-start-yarn.cmd</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="160" viewBox="0 0 600 160">
-                        <rect width="600" height="160" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="30" fill="#4ec9b0" font-family="monospace" font-size="11">Master: NameNode ResourceManager</text>
-                        <text x="20" y="60" fill="#d4d4d4" font-family="monospace" font-size="10">Slave1: DataNode NodeManager</text>
-                        <text x="20" y="90" fill="#d4d4d4" font-family="monospace" font-size="10">Slave2: DataNode NodeManager</text>
-                        <text x="20" y="125" fill="#ce9178" font-family="monospace" font-size="11">Cluster Health: GOOD</text>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="experiment" id="exp4">
-            <h2>Experiment 4: WordCount</h2>
-            <h3>💻 Program</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>import java.io.IOException;
-import java.util.StringTokenizer;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-public class WordCount {
-
-    public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
-        private final static IntWritable one = new IntWritable(1);
-        private final Text word = new Text();
-
-        @Override
-        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            StringTokenizer itr = new StringTokenizer(value.toString());
-            while (itr.hasMoreTokens()) {
-                word.set(itr.nextToken());
-                context.write(word, one);
-            }
-        }
-    }
-
-    public static class IntSumReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-        private final IntWritable result = new IntWritable();
-
-        @Override
-        public void reduce(Text key, Iterable<IntWritable> values, Context context)
-                throws IOException, InterruptedException {
-            int sum = 0;
-            for (IntWritable v : values) {
-                sum += v.get();
-            }
-            result.set(sum);
-            context.write(key, result);
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "word count");
-
-        job.setJarByClass(WordCount.class);
-        job.setMapperClass(TokenizerMapper.class);
-        job.setCombinerClass(IntSumReducer.class);
-        job.setReducerClass(IntSumReducer.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
-
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
-    }
-}
-</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="180" viewBox="0 0 600 180">
-                        <rect width="600" height="180" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="30" fill="#4ec9b0" font-family="monospace" font-size="13">WordCount Results</text>
-                        <text x="20" y="60" fill="#ce9178" font-family="monospace" font-size="12">Bye 1</text>
-                        <text x="20" y="85" fill="#ce9178" font-family="monospace" font-size="12">Goodbye 1</text>
-                        <text x="20" y="110" fill="#ce9178" font-family="monospace" font-size="12">Hadoop 2</text>
-                        <text x="20" y="135" fill="#ce9178" font-family="monospace" font-size="12">Hello 2</text>
-                        <text x="20" y="160" fill="#ce9178" font-family="monospace" font-size="12">World 2</text>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="experiment" id="exp5">
-            <h2>Experiment 5: Word Length Count</h2>
-            <h3>💻 Program</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>import java.io.IOException;
-import java.util.StringTokenizer;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Partitioner;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-public class WordLengthCount {
-
-    // Mapper: Emits (word_length, 1)
-    public static class TokenizerMapper extends Mapper<Object, Text, IntWritable, IntWritable> {
-        private static final IntWritable one = new IntWritable(1);
-        private final IntWritable lengthKey = new IntWritable();
-
-        @Override
-        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            StringTokenizer itr = new StringTokenizer(value.toString());
-            while (itr.hasMoreTokens()) {
-                String token = itr.nextToken().replaceAll("[^A-Za-z0-9]", "");
-                if (!token.isEmpty()) {
-                    lengthKey.set(token.length());
-                    context.write(lengthKey, one);
-                }
-            }
-        }
-    }
-
-    // Reducer: Sums up all counts for each word length
-    public static class SumReducer extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
-        private final IntWritable result = new IntWritable();
-
-        @Override
-        public void reduce(IntWritable key, Iterable<IntWritable> values, Context context)
-                throws IOException, InterruptedException {
-            int sum = 0;
-            for (IntWritable v : values) {
-                sum += v.get();
-            }
-            result.set(sum);
-            context.write(key, result);
-        }
-    }
-
-    // Optional: Custom partitioner to distribute keys by length
-    public static class LengthPartitioner extends Partitioner<IntWritable, IntWritable> {
-        @Override
-        public int getPartition(IntWritable key, IntWritable value, int numPartitions) {
-            return (key.get() & Integer.MAX_VALUE) % Math.max(1, numPartitions);
-        }
-    }
-
-    // Main method: Configures and runs the job
-    public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            System.err.println("Usage: WordLengthCount <input> <output>");
-            System.exit(2);
-        }
-
-        Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "word length count");
-
-        job.setJarByClass(WordLengthCount.class);
-        job.setMapperClass(TokenizerMapper.class);
-        job.setCombinerClass(SumReducer.class);
-        job.setReducerClass(SumReducer.class);
-
-        // Optional custom partitioner
-        // job.setPartitionerClass(LengthPartitioner.class);
-
-        job.setOutputKeyClass(IntWritable.class);
-        job.setOutputValueClass(IntWritable.class);
-
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
-    }
-}
-</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="180" viewBox="0 0 600 180">
-                        <rect width="600" height="180" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="30" fill="#4ec9b0" font-family="monospace" font-size="13">Word Length Results</text>
-                        <text x="20" y="60" fill="#ce9178" font-family="monospace" font-size="12">1 1</text>
-                        <rect x="150" y="48" width="20" height="14" fill="#667eea"/>
-                        <text x="20" y="90" fill="#ce9178" font-family="monospace" font-size="12">2 1</text>
-                        <rect x="150" y="78" width="20" height="14" fill="#667eea"/>
-                        <text x="20" y="120" fill="#ce9178" font-family="monospace" font-size="12">3 2</text>
-                        <rect x="150" y="108" width="40" height="14" fill="#764ba2"/>
-                        <text x="20" y="150" fill="#ce9178" font-family="monospace" font-size="12">4 3</text>
-                        <rect x="150" y="138" width="60" height="14" fill="#764ba2"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="experiment" id="exp6">
-            <h2>Experiment 6: Add and Retrieve Files</h2>
-            <h3>💻 Commands</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>hdfs dfs -put localfile.txt /
-hdfs dfs -get /file.txt ./
-hdfs dfs -ls /</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="150" viewBox="0 0 600 150">
-                        <rect width="600" height="150" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="30" fill="#4ec9b0" font-family="monospace" font-size="11">Found 3 items</text>
-                        <text x="20" y="60" fill="#ce9178" font-family="monospace" font-size="10">-rw-r--r-- 1024 /file1.txt</text>
-                        <text x="20" y="85" fill="#ce9178" font-family="monospace" font-size="10">-rw-r--r-- 2048 /file2.txt</text>
-                        <text x="20" y="110" fill="#ce9178" font-family="monospace" font-size="10">drwxr-xr-x 0 /mydir</text>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="experiment" id="exp7">
-            <h2>Experiment 7: Add Files and Directories</h2>
-            <h3>💻 Commands</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>hdfs dfs -mkdir /mydata
-hdfs dfs -put data.txt /mydata/
-hdfs dfs -ls /</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="140" viewBox="0 0 600 140">
-                        <rect width="600" height="140" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="30" fill="#4ec9b0" font-family="monospace" font-size="11">Directory created: /mydata</text>
-                        <text x="20" y="60" fill="#d4d4d4" font-family="monospace" font-size="10">File uploaded</text>
-                        <text x="20" y="95" fill="#ce9178" font-family="monospace" font-size="10">drwxr-xr-x /mydata</text>
-                        <text x="20" y="120" fill="#ce9178" font-family="monospace" font-size="10">-rw-r--r-- /mydata/data.txt</text>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="experiment" id="exp8">
-            <h2>Experiment 8: Retrieve and Delete</h2>
-            <h3>💻 Commands</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>hdfs dfs -get /file.txt ./
-hdfs dfs -rm -r /file.txt
-hdfs dfs -ls /</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="130" viewBox="0 0 600 130">
-                        <rect width="600" height="130" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="30" fill="#4ec9b0" font-family="monospace" font-size="11">File retrieved</text>
-                        <text x="20" y="60" fill="#ce9178" font-family="monospace" font-size="11">Deleted /file.txt</text>
-                        <text x="20" y="95" fill="#d4d4d4" font-family="monospace" font-size="10">Verification complete</text>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="experiment" id="exp9">
-            <h2>Experiment 9: Weather Data Mining</h2>
-            <h3>💻 Program</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>import java.io.IOException;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-/*
-Assumes fixed-width NCDC-like records:
-- Year at positions [15,19) (0-based indices). Adjust as per your dataset.
-- Air temperature field at [87,92). Update indices accordingly.
-- Missing temperature often encoded as 9999.
-*/
-
-public class MaxTemperatureByYear {
-
-    public static class MaxTempMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
-        private static final int MISSING = 9999;
-        private final Text outYear = new Text();
-        private final IntWritable outTemp = new IntWritable();
-
-        @Override
-        protected void map(LongWritable key, Text value, Context context)
-                throws IOException, InterruptedException {
-
-            String line = value.toString();
-            if (line.length() < 92) return; // skip short lines
-
-            // Example indices for NCDC format; adjust for your dataset
-            String year = line.substring(15, 19);
-            String sign = line.substring(87, 88);
-            String tempStr = line.substring(88, 92);
-
-            int airTemp;
-            try {
-                airTemp = Integer.parseInt(tempStr);
-            } catch (NumberFormatException e) {
-                return; // skip invalid temperatures
-            }
-
-            if ("-".equals(sign)) {
-                airTemp = -airTemp;
-            }
-
-            if (airTemp != MISSING) {
-                outYear.set(year);
-                outTemp.set(airTemp);
-                context.write(outYear, outTemp);
-            }
-        }
-    }
-
-    public static class MaxTempReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-        private final IntWritable result = new IntWritable();
-
-        @Override
-        protected void reduce(Text key, Iterable<IntWritable> values, Context context)
-                throws IOException, InterruptedException {
-
-            int max = Integer.MIN_VALUE;
-            for (IntWritable v : values) {
-                if (v.get() > max) {
-                    max = v.get();
-                }
-            }
-
-            if (max != Integer.MIN_VALUE) {
-                result.set(max);
-                context.write(key, result);
-            }
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            System.err.println("Usage: MaxTemperatureByYear <input> <output>");
-            System.exit(2);
-        }
-
-        Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "max temperature by year");
-
-        job.setJarByClass(MaxTemperatureByYear.class);
-        job.setMapperClass(MaxTempMapper.class);
-        job.setCombinerClass(MaxTempReducer.class); // safe combiner for max
-        job.setReducerClass(MaxTempReducer.class);
-
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
-
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
-    }
-}
-</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="200" viewBox="0 0 600 200">
-                        <rect width="600" height="200" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="30" fill="#4ec9b0" font-family="monospace" font-size="13">Max Temperature by Year</text>
-                        <text x="20" y="65" fill="#ce9178" font-family="monospace" font-size="12">1950 313</text>
-                        <rect x="150" y="53" width="120" height="14" fill="#e74c3c" opacity="0.7"/>
-                        <text x="20" y="95" fill="#ce9178" font-family="monospace" font-size="12">1951 279</text>
-                        <rect x="150" y="83" width="100" height="14" fill="#f39c12" opacity="0.7"/>
-                        <text x="20" y="125" fill="#ce9178" font-family="monospace" font-size="12">1952 324</text>
-                        <rect x="150" y="113" width="130" height="14" fill="#e74c3c" opacity="0.7"/>
-                        <text x="20" y="155" fill="#ce9178" font-family="monospace" font-size="12">1953 337</text>
-                        <rect x="150" y="143" width="140" height="14" fill="#c0392b" opacity="0.7"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="experiment" id="exp10">
-            <h2>Experiment 10: Matrix Multiplication</h2>
-            <h3>💻 Program</h3>
-            <div class="code-container">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>import java.io.IOException;
-import java.util.HashMap;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-public class MatrixMultiply {
-
-    // ---------- MAPPER ----------
-    public static class MatMulMapper extends Mapper<Object, Text, Text, Text> {
-        private final Text outKey = new Text();
-        private final Text outVal = new Text();
-
-        @Override
-        protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            String[] parts = value.toString().trim().split("\\s*,\\s*");
-            if (parts.length != 4) return;
-
-            String tag = parts[0];
-            if (tag.equalsIgnoreCase("A")) {
-                // A,i,j,value → key=j, value="A,i,value"
-                outKey.set(parts[2]);
-                outVal.set("A," + parts[1] + "," + parts[3]);
-                context.write(outKey, outVal);
-            } else if (tag.equalsIgnoreCase("B")) {
-                // B,j,k,value → key=j, value="B,k,value"
-                outKey.set(parts[1]);
-                outVal.set("B," + parts[2] + "," + parts[3]);
-                context.write(outKey, outVal);
-            }
-        }
-    }
-
-    // ---------- REDUCER ----------
-    public static class MatMulReducer extends Reducer<Text, Text, Text, Text> {
-        private final Text outKey = new Text();
-        private final Text outVal = new Text();
-
-        @Override
-        protected void reduce(Text key, Iterable<Text> values, Context context)
-                throws IOException, InterruptedException {
-
-            HashMap<Integer, Double> A = new HashMap<>(); // i → a_ij
-            HashMap<Integer, Double> B = new HashMap<>(); // k → b_jk
-
-            for (Text val : values) {
-                String[] parts = val.toString().split("\\s*,\\s*");
-                if (parts.length != 3) continue;
-
-                String tag = parts[0];
-                int idx = Integer.parseInt(parts[1]);
-                double v = Double.parseDouble(parts[2]);
-
-                if (tag.equals("A"))
-                    A.put(idx, v);
-                else if (tag.equals("B"))
-                    B.put(idx, v);
-            }
-
-            HashMap<String, Double> partialResults = new HashMap<>();
-
-            for (var aEntry : A.entrySet()) {
-                int i = aEntry.getKey();
-                double aVal = aEntry.getValue();
-
-                for (var bEntry : B.entrySet()) {
-                    int k = bEntry.getKey();
-                    double bVal = bEntry.getValue();
-
-                    String outPair = i + "," + k;
-                    partialResults.put(outPair, partialResults.getOrDefault(outPair, 0.0) + aVal * bVal);
-                }
-            }
-
-            for (var entry : partialResults.entrySet()) {
-                outKey.set(entry.getKey());
-                outVal.set(String.valueOf(entry.getValue()));
-                context.write(outKey, outVal);
-            }
-        }
-    }
-
-    // ---------- MAIN ----------
-    public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            System.err.println("Usage: MatrixMultiply <input> <output>");
-            System.exit(2);
-        }
-
-        Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "Matrix Multiply");
-
-        job.setJarByClass(MatrixMultiply.class);
-        job.setMapperClass(MatMulMapper.class);
-        job.setReducerClass(MatMulReducer.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(Text.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
-
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
-    }
-}
-</code></pre>
-            </div>
-            <div class="output-section">
-                <h3>📊 Output</h3>
-                <div class="output-placeholder">
-                    <svg width="600" height="240" viewBox="0 0 600 240">
-                        <rect width="600" height="240" fill="#1e1e1e" rx="10"/>
-                        <text x="20" y="30" fill="#4ec9b0" font-family="monospace" font-size="13">Matrix Multiplication Result</text>
-                        <text x="20" y="65" fill="#d4d4d4" font-family="monospace" font-size="11">Matrix A (2x2) x Matrix B (2x2)</text>
-                        <text x="20" y="105" fill="#ce9178" font-family="monospace" font-size="12">0,0 19</text>
-                        <text x="20" y="135" fill="#ce9178" font-family="monospace" font-size="12">0,1 22</text>
-                        <text x="20" y="165" fill="#ce9178" font-family="monospace" font-size="12">1,0 43</text>
-                        <text x="20" y="195" fill="#ce9178" font-family="monospace" font-size="12">1,1 50</text>
-                        <text x="300" y="130" fill="#4ec9b0" font-family="monospace" font-size="11">Result Matrix:</text>
-                        <text x="300" y="160" fill="#d4d4d4" font-family="monospace" font-size="10">| 19 22 |</text>
-                        <text x="300" y="185" fill="#d4d4d4" font-family="monospace" font-size="10">| 43 50 |</text>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function showExperiment(num) {
-            const exps = document.querySelectorAll('.experiment');
-            const btns = document.querySelectorAll('.nav-btn');
-            exps.forEach(exp => exp.classList.remove('active'));
-            btns.forEach(btn => btn.classList.remove('active'));
-            document.getElementById('exp' + num).classList.add('active');
-            btns[num - 1].classList.add('active');
-        }
-
-        function copyCode(btn) {
-            const code = btn.nextElementSibling.querySelector('code').textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = 'Copy';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
-        }
-    </script>
+      `;
+      list.appendChild(el);
+
+      const btn = el.querySelector('button');
+      btn.addEventListener('click', ()=>{
+        const open = el.classList.toggle('open');
+        if(open){ document.querySelectorAll('.card.open').forEach(c=>{ if(c!==el) c.classList.remove('open'); }); }
+      });
+    });
+
+    document.getElementById('collapseAll').addEventListener('click', ()=>{
+      document.querySelectorAll('.card.open').forEach(c=>c.classList.remove('open'));
+    });
+
+    function escape(s){ return (s||'').toString().replace(/[&<>]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;' }[c]||c)); }
+  </script>
 </body>
 </html>
